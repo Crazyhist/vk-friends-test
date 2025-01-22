@@ -9,8 +9,6 @@ export const calculateFriendFrequency = (
 		const count = frequencyMap.get(friend.id) || 0
 		frequencyMap.set(friend.id, count + 1)
 	})
-	console.log('Список друзей для подсчёта частоты:', friends)
-	console.log('Частота друзей:', frequencyMap)
 
 	return frequencyMap
 }

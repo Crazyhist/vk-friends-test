@@ -5,27 +5,22 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useSourceStore = defineStore('sourceStore', () => {
-	const sourceList = ref<VkUser[]>([]) // Список "Исходный"
-	const friendsList = ref<VkUser[]>([]) // Список "Друзья"
+	const sourceList = ref<VkUser[]>([])
+	const friendsList = ref<VkUser[]>([])
 
-	// Добавить пользователя в "Исходный"
 	const addUser = (user: VkUser) => {
 		if (!sourceList.value.find((u) => u.id === user.id)) {
 			sourceList.value.push(user)
 		}
 	}
 
-	// Удалить пользователя из "Исходного"
 	const removeUser = (userId: number) => {
 		sourceList.value = sourceList.value.filter((user) => user.id !== userId)
 	}
-
-	// Установить список "Друзья"
 	const setFriendsList = (friends: VkUser[]) => {
 		friendsList.value = friends
 	}
 
-	// Очистить оба списка
 	const clearLists = () => {
 		sourceList.value = []
 		friendsList.value = []
@@ -45,7 +40,6 @@ export const useSourceStore = defineStore('sourceStore', () => {
 		for (const user of sourceList.value) {
 			try {
 				const userFriends = await getFriends(user.id)
-				console.log(`Друзья пользователя ${user.first_name}:`, userFriends)
 				allFriends.push(...userFriends)
 			} catch (error) {
 				console.error(
@@ -55,13 +49,8 @@ export const useSourceStore = defineStore('sourceStore', () => {
 			}
 		}
 
-		console.log('Все друзья из исходного списка:', allFriends)
-
-		// Подсчитываем частоту друзей
 		const frequencyMap = calculateFriendFrequency(allFriends)
-		console.log('Частота друзей:', frequencyMap)
 
-		// Убираем дубликаты, но сохраняем список для отображения
 		const uniqueFriends = Array.from(
 			new Map(allFriends.map((friend) => [friend.id, friend])).values()
 		)
@@ -71,9 +60,7 @@ export const useSourceStore = defineStore('sourceStore', () => {
 		})
 
 		setFriendsList(uniqueFriends)
-		console.log('Список уникальных друзей:', uniqueFriends)
 
-		// Сортируем список
 		sortFriendsList()
 	}
 

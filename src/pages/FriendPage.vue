@@ -11,18 +11,16 @@ const router = useRouter()
 const userId = route.params.id as string
 const friend = ref<VkUser | null>(null)
 const wallPosts = ref<VkWallPost[]>([])
-const sourceUsers = ref<VkUser[]>([]) // Пользователи из "Исходного", у которых этот друг есть в друзьях
-
-// Получение данных о друге
+const sourceUsers = ref<VkUser[]>([])
 const fetchFriendData = async () => {
 	try {
+		// friend.value = await getUserById(userId)
 		wallPosts.value = await getUserWall(userId)
 	} catch (error) {
 		console.error('Ошибка загрузки данных друга:', error)
 	}
 }
 
-// Найти "Исходных", у которых друг есть в друзьях
 const fetchSourceUsers = () => {
 	const sourceStore = useSourceStore()
 	sourceUsers.value = sourceStore.sourceList.filter((user) =>
@@ -37,7 +35,6 @@ onMounted(() => {
 	fetchSourceUsers()
 })
 
-// Переход назад
 const goBack = () => {
 	router.push('/')
 }

@@ -58,9 +58,6 @@ export async function searchUsers(query: string): Promise<VkUser[]> {
 	}
 }
 
-/**
- * Получение информации о пользователях по ID или имени пользователя
- */
 export async function getUserById(userId: number | string): Promise<VkUser> {
 	try {
 		const response = await axiosInstance.get<VkResponse<VkUser[]>>(
@@ -73,8 +70,6 @@ export async function getUserById(userId: number | string): Promise<VkUser> {
 				},
 			}
 		)
-
-		console.log('VK API Response:', response.data) // Лог полного ответа
 
 		if (response.data.error) {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
@@ -97,9 +92,6 @@ export async function getUserById(userId: number | string): Promise<VkUser> {
 	}
 }
 
-/**
- * Получение списка друзей пользователя
- */
 export async function getFriends(userId: number | string): Promise<VkUser[]> {
 	try {
 		const response = await axiosInstance.get<VkResponse<VkUser[]>>(
@@ -124,9 +116,6 @@ export async function getFriends(userId: number | string): Promise<VkUser[]> {
 	}
 }
 
-/**
- * Получение записей на стене пользователя
- */
 export async function getUserWall(
 	userId: number | string
 ): Promise<VkWallPost[]> {
