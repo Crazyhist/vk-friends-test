@@ -1,4 +1,5 @@
 import axiosInstance from '@/api/axiosInstance'
+import { calculateAge } from '@/utils/calculateAge'
 
 export interface VkResponse<T> {
 	response: {
@@ -109,7 +110,11 @@ export async function getFriends(userId: number | string): Promise<VkUser[]> {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
 		}
 
-		return response.data.response.items
+		return response.data.response.items.map((user) => ({
+			...user,
+			friends_count: response.data.response.count,
+			age: calculateAge(user.bdate),
+		}))
 	} catch (error) {
 		console.error('Ошибка при получении списка друзей:', error)
 		throw error

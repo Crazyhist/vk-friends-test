@@ -7,6 +7,8 @@ export interface VkUser {
 	photo_100: string
 	sex: 1 | 2
 	bdate?: string
+	friends_count?: number
+	age?: number
 	frequency?: number
 }
 
