@@ -8,9 +8,6 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
 	plugins: [vue(), vueDevTools()],
 	base: '/vk-friends-test/',
-	build: {
-		outDir: 'root',
-	},
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
