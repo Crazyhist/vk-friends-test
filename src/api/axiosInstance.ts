@@ -1,6 +1,8 @@
 import axios from 'axios'
 
 const BASE_URL = '/api/method'
+// const BASE_URL =
+// 	'https://cors-anywhere.herokuapp.com/https://api.vk.com/method/'
 
 const axiosInstance = axios.create({
 	baseURL: BASE_URL,
