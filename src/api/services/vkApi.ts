@@ -123,37 +123,12 @@ export async function getFriends(userId: number | string): Promise<VkUser[]> {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
 		}
 
-		const friends = response.data.response.items
-
-		const friendsWithCount = await Promise.all(
-			friends.map(async (friend) => {
-				try {
-					const friendResponse = await axiosInstance.get<VkResponse<VkUser[]>>(
-						'/friends.get',
-						{
-							params: {
-								user_id: friend.id,
-								v: API_VERSION,
-							},
-						}
-					)
-					return {
-						...friend,
-						age: calculateAge(friend.bdate),
-						friends_count: friendResponse.data.response.count,
-					}
-				} catch {
-					return { ...friend, age: calculateAge(friend.bdate) }
-				}
-			})
-		)
-
-		return friendsWithCount
+		return response.data.response.items.map((user) => ({
+			...user,
+			age: calculateAge(user.bdate),
+		}))
 	} catch (error) {
-		console.error(
-			'Ошибка при получении списка друзей с количеством друзей:',
-			error
-		)
+		console.error('Ошибка при получении списка друзей:', error)
 		throw error
 	}
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUserWall } from '@/api/services/vkApi'
+import { getUserById, getUserWall } from '@/api/services/vkApi'
 import { useSourceStore } from '@/stores/sourceStore'
 import type { VkUser, VkWallPost } from '@/types/vk'
 import { onMounted, ref } from 'vue'
@@ -24,11 +24,12 @@ const fetchFriendData = async () => {
 
 const fetchSourceUsers = () => {
 	const sourceStore = useSourceStore()
+
 	sourceUsers.value = sourceStore.sourceList.filter((user) =>
-		sourceStore.friendsList.some(
-			(f) => f.id === friend.value?.id && f.id === user.id
-		)
+		sourceStore.friendsList.some((friend) => friend.id === user.id)
 	)
+
+	console.log('Общие пользователи:', sourceUsers.value)
 }
 
 onMounted(() => {
@@ -45,17 +46,7 @@ const goBack = () => {
 	<div class="friend-page">
 		<button @click="goBack" class="back-button">Назад</button>
 
-		<div v-if="friend" class="friend-info">
-			<img :src="friend.photo_100" alt="Фото друга" />
-			<h2>{{ friend.first_name }} {{ friend.last_name }}</h2>
-			<p>Пол: {{ friend.sex === 1 ? 'Женщина' : 'Мужчина' }}</p>
-			<p>Дата рождения: {{ friend.bdate || 'N/A' }}</p>
-		</div>
-		<div v-else>
-			<p>Данные о пользователе не найдены.</p>
-		</div>
-
-		<h3>Исходные пользователи:</h3>
+		<h3>Общие пользователи:</h3>
 		<ul>
 			<li v-for="user in sourceUsers" :key="user.id">
 				{{ user.first_name }} {{ user.last_name }}

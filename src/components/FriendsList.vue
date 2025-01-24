@@ -28,6 +28,7 @@ const store = useSourceStore()
 						<div v-if="friend.age">Возраст: {{ friend.age }} лет</div>
 						<div>Друзей: {{ friend.friends_count || 'N/A' }}</div>
 						<div>Пол: {{ friend.sex === 1 ? 'Женский' : 'Мужской' }}</div>
+						<p>Частота встречаемости: {{ friend.frequency }}</p>
 					</div>
 				</router-link>
 			</li>

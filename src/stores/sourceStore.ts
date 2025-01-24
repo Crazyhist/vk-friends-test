@@ -55,8 +55,11 @@ export const useSourceStore = defineStore('sourceStore', () => {
 			new Map(allFriends.map((friend) => [friend.id, friend])).values()
 		)
 
-		uniqueFriends.forEach((friend) => {
-			friend['frequency'] = frequencyMap.get(friend.id) || 1
+		uniqueFriends.forEach((friend, index) => {
+			uniqueFriends[index] = {
+				...friend,
+				frequency: frequencyMap.get(friend.id) || 1,
+			}
 		})
 
 		setFriendsList(uniqueFriends)
