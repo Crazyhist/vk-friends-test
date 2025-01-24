@@ -21,6 +21,18 @@ export interface VkUser {
 	bdate?: string
 }
 
+export interface VkAttachment {
+	type: string
+	photo?: {
+		id: number
+		album_id: number
+		owner_id: number
+		sizes: { url: string; type: string }[]
+		text: string
+		date: number
+	}
+}
+
 export interface VkWallPost {
 	id: number
 	owner_id: number
@@ -30,6 +42,7 @@ export interface VkWallPost {
 	likes?: {
 		count: number
 	}
+	attachments?: VkAttachment[]
 }
 
 const API_VERSION = '5.199'
@@ -155,6 +168,7 @@ export async function getUserWall(
 				params: {
 					owner_id: userId,
 					count: 10,
+					fields: 'attachments',
 					v: API_VERSION,
 				},
 			}

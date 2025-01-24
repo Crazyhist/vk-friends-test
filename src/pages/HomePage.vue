@@ -18,7 +18,6 @@ import { useSourceStore } from '@/stores/sourceStore'
 
 const store = useSourceStore()
 
-// Добавить пользователя в "Исходный"
 const addUserToSource = (user) => {
 	store.addUser(user)
 }

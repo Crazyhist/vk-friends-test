@@ -20,6 +20,17 @@ export interface VkResponse<T> {
 	}
 }
 
+export interface VkAttachment {
+	type: string
+	photo?: {
+		id: number
+		album_id: number
+		owner_id: number
+		sizes: { url: string; type: string }[]
+		date: number
+	}
+}
+
 export interface VkWallPost {
 	id: number
 	owner_id: number
@@ -29,4 +40,5 @@ export interface VkWallPost {
 	likes?: {
 		count: number
 	}
+	attachments?: VkAttachment[]
 }
