@@ -14,6 +14,7 @@
 import FriendsList from '@/components/FriendsList.vue'
 import SearchInput from '@/components/SearchInput.vue'
 import SourceList from '@/components/SourceList.vue'
+
 import { useSourceStore } from '@/stores/sourceStore'
 
 const store = useSourceStore()
@@ -41,6 +42,7 @@ const addUserToSource = (user) => {
 
 .columns {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 20px;
 	align-items: flex-start;
 }

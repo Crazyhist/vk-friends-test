@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUserById, getUserWall } from '@/api/services/vkApi'
+import { getFriends, getUserWall } from '@/api/services/vkApi'
 import { useSourceStore } from '@/stores/sourceStore'
 import type { VkUser, VkWallPost } from '@/types/vk'
 import { onMounted, ref } from 'vue'
@@ -8,33 +8,36 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
-const userId = route.params.id as string
+const userId = Number(route.params.id)
 const friend = ref<VkUser | null>(null)
 const wallPosts = ref<VkWallPost[]>([])
 const sourceUsers = ref<VkUser[]>([])
+const commonFriends = ref<VkUser[]>([])
 
 const fetchFriendData = async () => {
 	try {
-		// friend.value = await getUserById(userId)
 		wallPosts.value = await getUserWall(userId)
 	} catch (error) {
 		console.error('Ошибка загрузки данных друга:', error)
 	}
 }
 
-const fetchSourceUsers = () => {
-	const sourceStore = useSourceStore()
-
-	sourceUsers.value = sourceStore.sourceList.filter((user) =>
-		sourceStore.friendsList.some((friend) => friend.id === user.id)
-	)
-
-	console.log('Общие пользователи:', sourceUsers.value)
+const fetchCommonFriends = async () => {
+	try {
+		const sourceStore = useSourceStore()
+		const userFriends = await getFriends(userId)
+		commonFriends.value = userFriends.filter((friend) =>
+			sourceStore.sourceList.some((source) => source.id === friend.id)
+		)
+		console.log('Общие друзья:', commonFriends.value)
+	} catch (error) {
+		console.error('Ошибка загрузки списка друзей:', error)
+	}
 }
 
 onMounted(() => {
 	fetchFriendData()
-	fetchSourceUsers()
+	fetchCommonFriends()
 })
 
 const goBack = () => {
@@ -48,7 +51,7 @@ const goBack = () => {
 
 		<h3>Общие пользователи:</h3>
 		<ul>
-			<li v-for="user in sourceUsers" :key="user.id">
+			<li v-for="user in commonFriends" :key="user.id">
 				{{ user.first_name }} {{ user.last_name }}
 			</li>
 		</ul>

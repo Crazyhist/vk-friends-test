@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { searchUsers } from '@/api/services/vkApi'
-import { useSourceStore } from '@/stores/sourceStore'
 import type { VkUser } from '@/types/vk'
+
+import { useSourceStore } from '@/stores/sourceStore'
+
 import { defineEmits, ref } from 'vue'
+
+const store = useSourceStore()
 
 const query = ref('')
 const searchResults = ref<VkUser[]>([])
 const emit = defineEmits(['select-user'])
-
-const store = useSourceStore()
 
 const performSearch = async () => {
 	if (!query.value.trim()) return
@@ -48,7 +50,6 @@ const buildFriendsList = async () => {
 				{{ user.first_name }} {{ user.last_name }} (ID: {{ user.id }})
 			</li>
 		</ul>
-
 		<button class="build-button" @click="buildFriendsList">
 			Построить список "Друзья"
 		</button>

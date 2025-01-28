@@ -1,5 +1,9 @@
 export type VkUserId = number
 
+export interface VkCounters {
+	friends?: number
+}
+
 export interface VkUser {
 	id: VkUserId
 	first_name: string
@@ -7,9 +11,13 @@ export interface VkUser {
 	photo_100: string
 	sex: 1 | 2
 	bdate?: string
-	friends_count?: number
+	friends_count?: number | null
 	age?: number
 	frequency?: number
+	counters?: {
+		friends?: number
+		[key: string]: number | undefined
+	}
 }
 
 export interface VkResponse<T> {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSourceStore } from '@/stores/sourceStore'
+import FriendItem from './FriendItem.vue'
 
 const store = useSourceStore()
 </script>
@@ -8,30 +9,11 @@ const store = useSourceStore()
 	<div class="column">
 		<h3 class="column-title">Друзья</h3>
 		<ul>
-			<li
+			<FriendItem
 				v-for="friend in store.friendsList"
 				:key="friend.id"
-				class="friend-item"
-				:style="{
-					backgroundColor: `rgba(0, 200, 255, ${Math.min(
-						(friend.frequency || 0) * 0.2,
-						1
-					)})`,
-				}"
-			>
-				<router-link :to="`/friend/${friend.id}`" class="friend-link">
-					<img :src="friend.photo_100" alt="Фото друга" />
-					<div>
-						<div>
-							<strong>{{ friend.last_name }} {{ friend.first_name }}</strong>
-						</div>
-						<div v-if="friend.age">Возраст: {{ friend.age }} лет</div>
-						<div>Друзей: {{ friend.friends_count || 'N/A' }}</div>
-						<div>Пол: {{ friend.sex === 1 ? 'Женский' : 'Мужской' }}</div>
-						<p>Частота встречаемости: {{ friend.frequency }}</p>
-					</div>
-				</router-link>
-			</li>
+				:friend="friend"
+			/>
 		</ul>
 	</div>
 </template>
@@ -45,29 +27,5 @@ const store = useSourceStore()
 
 .column-title {
 	margin-bottom: 10px;
-}
-
-.friend-item {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 10px;
-	background: white;
-	border-radius: 5px;
-	margin-bottom: 10px;
-	transition: background-color 0.3s;
-}
-
-.friend-link {
-	text-decoration: none;
-	color: inherit;
-	display: flex;
-	align-items: center;
-}
-
-.friend-item img {
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
 }
 </style>

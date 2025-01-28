@@ -3,7 +3,7 @@ import { calculateAge } from '@/utils/calculateAge'
 
 export interface VkResponse<T> {
 	response: {
-		count: number
+		count?: number
 		items: T
 	}
 	error?: {
@@ -19,6 +19,10 @@ export interface VkUser {
 	photo_100: string
 	sex: 1 | 2
 	bdate?: string
+	counters?: {
+		friends?: number
+		[key: string]: number | undefined
+	}
 }
 
 export interface VkAttachment {
@@ -79,27 +83,23 @@ export async function getUserById(userId: number | string): Promise<VkUser> {
 			{
 				params: {
 					user_ids: userId,
-					fields: 'photo_100,sex,bdate',
+					fields: 'counters',
 					v: API_VERSION,
 				},
 			}
 		)
 
+		console.log('Ответ VK API:', response.data)
+
 		if (response.data.error) {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
 		}
 
-		if (
-			!response.data.response ||
-			!response.data.response.items ||
-			response.data.response.items.length === 0
-		) {
-			throw new Error(
-				'Некорректный формат ответа от VK API или пользователь не найден'
-			)
+		const users = response.data.response
+		if (!Array.isArray(users) || users.length === 0) {
+			throw new Error('Пользователь не найден')
 		}
-
-		return response.data.response.items[0]
+		return users[0]
 	} catch (error) {
 		console.error('Ошибка при получении информации о пользователе:', error)
 		throw error
@@ -113,6 +113,7 @@ export async function getFriends(userId: number | string): Promise<VkUser[]> {
 			{
 				params: {
 					user_id: userId,
+					count: 5000,
 					fields: 'photo_100,sex,bdate',
 					v: API_VERSION,
 				},
@@ -122,7 +123,7 @@ export async function getFriends(userId: number | string): Promise<VkUser[]> {
 		if (response.data.error) {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
 		}
-
+		console.log('Ответ VK API друзья:', response.data)
 		return response.data.response.items.map((user) => ({
 			...user,
 			age: calculateAge(user.bdate),
