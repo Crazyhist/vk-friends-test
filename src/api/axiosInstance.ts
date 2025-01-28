@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const BASE_URL = '/api/method'
-const BASE_URL = '/api/'
+const BASE_URL = '/api/method'
+// const BASE_URL = '/api/'
 // const BASE_URL =
 // 	'https://cors-anywhere.herokuapp.com/https://api.vk.com/method/'
 
