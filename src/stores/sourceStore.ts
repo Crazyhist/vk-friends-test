@@ -12,7 +12,6 @@ import { computed, ref } from 'vue'
 export const useSourceStore = defineStore('sourceStore', () => {
 	const sourceList = ref<VkUser[]>([])
 	const friendsList = ref<VkUser[]>([])
-	const selectedUser = ref<number | null>(null)
 
 	const addUser = (user: VkUser) => {
 		if (!sourceList.value.find((u) => u.id === user.id)) {

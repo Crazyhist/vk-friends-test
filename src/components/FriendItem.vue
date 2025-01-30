@@ -37,7 +37,6 @@ const fetchFriendCount = async () => {
 	}
 }
 
-// Следим за видимостью
 watch(targetIsVisible, (isVisible) => {
 	if (isVisible) fetchFriendCount()
 })

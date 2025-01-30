@@ -9,9 +9,7 @@ const route = useRoute()
 const router = useRouter()
 
 const userId = Number(route.params.id)
-const friend = ref<VkUser | null>(null)
 const wallPosts = ref<VkWallPost[]>([])
-const sourceUsers = ref<VkUser[]>([])
 const commonFriends = ref<VkUser[]>([])
 
 const fetchFriendData = async () => {
@@ -27,13 +25,23 @@ const fetchCommonFriends = async () => {
 	try {
 		const sourceStore = useSourceStore()
 		const userFriends = await getFriends(userId)
+
 		commonFriends.value = userFriends.filter((friend) =>
 			sourceStore.sourceList.some((source) => source.id === friend.id)
 		)
-		console.log('Общие друзья:', commonFriends.value)
 	} catch (error) {
-		console.error('Ошибка загрузки списка друзей:', error)
-		commonFriends.value = []
+		if (
+			(error as { message?: string })?.message === 'This profile is private'
+		) {
+			const sourceStore = useSourceStore()
+
+			commonFriends.value = sourceStore.sourceList.filter((source) =>
+				sourceStore.friendsList.some((friend) => friend.id === source.id)
+			)
+			console.log('Общие друзья без APi:', commonFriends.value)
+		} else {
+			commonFriends.value = []
+		}
 	}
 }
 
