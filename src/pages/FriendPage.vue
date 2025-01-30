@@ -19,6 +19,7 @@ const fetchFriendData = async () => {
 		wallPosts.value = await getUserWall(userId)
 	} catch (error) {
 		console.error('Ошибка загрузки данных друга:', error)
+		wallPosts.value = []
 	}
 }
 
@@ -32,6 +33,7 @@ const fetchCommonFriends = async () => {
 		console.log('Общие друзья:', commonFriends.value)
 	} catch (error) {
 		console.error('Ошибка загрузки списка друзей:', error)
+		commonFriends.value = []
 	}
 }
 
@@ -54,6 +56,7 @@ const goBack = () => {
 			<li v-for="user in commonFriends" :key="user.id">
 				{{ user.first_name }} {{ user.last_name }}
 			</li>
+			<li v-if="commonFriends.length === 0">Общих друзей не найдено.</li>
 		</ul>
 
 		<h3>Записи на стене:</h3>
@@ -72,6 +75,7 @@ const goBack = () => {
 					class="attachment"
 				/>
 			</li>
+			<li v-if="wallPosts.length === 0">Записей на стене нет.</li>
 		</ul>
 	</div>
 </template>

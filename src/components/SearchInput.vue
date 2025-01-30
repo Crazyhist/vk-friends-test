@@ -4,7 +4,7 @@ import type { VkUser } from '@/types/vk'
 
 import { useSourceStore } from '@/stores/sourceStore'
 
-import { defineEmits, ref } from 'vue'
+import { defineEmits, ref, watch } from 'vue'
 
 const store = useSourceStore()
 
@@ -30,6 +30,12 @@ const selectUser = (user: VkUser) => {
 const buildFriendsList = async () => {
 	await store.buildFriendsList()
 }
+
+watch(query, (newValue) => {
+	if (!newValue.trim()) {
+		searchResults.value = []
+	}
+})
 </script>
 
 <template>

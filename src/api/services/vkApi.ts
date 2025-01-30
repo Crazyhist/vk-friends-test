@@ -89,8 +89,6 @@ export async function getUserById(userId: number | string): Promise<VkUser> {
 			}
 		)
 
-		console.log('Ответ VK API:', response.data)
-
 		if (response.data.error) {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
 		}
@@ -123,7 +121,7 @@ export async function getFriends(userId: number | string): Promise<VkUser[]> {
 		if (response.data.error) {
 			throw new Error(response.data.error.error_msg || 'Ошибка VK API')
 		}
-		console.log('Ответ VK API друзья:', response.data)
+
 		return response.data.response.items.map((user) => ({
 			...user,
 			age: calculateAge(user.bdate),
