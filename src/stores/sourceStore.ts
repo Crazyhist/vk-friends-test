@@ -1,4 +1,4 @@
-import type { VkUser } from '@/types/vk'
+import type { VkUser, VkUserId } from '@/types/vk'
 
 import { getFriends } from '@/api/services/vkApi'
 
@@ -12,6 +12,8 @@ import { computed, ref } from 'vue'
 export const useSourceStore = defineStore('sourceStore', () => {
 	const sourceList = ref<VkUser[]>([])
 	const friendsList = ref<VkUser[]>([])
+	const commonFriends = ref<VkUser[]>([])
+	const friendsByUserId = ref<Record<VkUserId, VkUser[]>>({})
 
 	const addUser = (user: VkUser) => {
 		if (!sourceList.value.find((u) => u.id === user.id)) {
@@ -48,6 +50,8 @@ export const useSourceStore = defineStore('sourceStore', () => {
 				try {
 					const userFriends = await getFriends(user.id)
 					allFriends.push(...userFriends)
+
+					friendsByUserId.value[user.id] = userFriends
 				} catch (error) {
 					console.error(
 						`Ошибка загрузки друзей для пользователя ${user.id}:`,
@@ -60,6 +64,41 @@ export const useSourceStore = defineStore('sourceStore', () => {
 		enabled: computed(() => sourceList.value.length > 0),
 		staleTime: 1000 * 60 * 5,
 	})
+
+	const findUsersWithFriend = (friendId: VkUserId): VkUser[] => {
+		const usersWithFriend: VkUser[] = []
+
+		Object.entries(friendsByUserId.value).forEach(([userId, friends]) => {
+			if (friends.some((friend) => friend.id === friendId)) {
+				const user = sourceList.value.find((u) => u.id === Number(userId))
+				if (user) {
+					usersWithFriend.push(user)
+				}
+			}
+		})
+
+		return usersWithFriend
+	}
+
+	const findCommonFriends = () => {
+		if (friendsQuery.data.value) {
+			const allFriends = friendsQuery.data.value
+
+			const friendCounts = new Map<number, VkUser & { count: number }>()
+
+			allFriends.forEach((friend) => {
+				if (friendCounts.has(friend.id)) {
+					friendCounts.get(friend.id)!.count++
+				} else {
+					friendCounts.set(friend.id, { ...friend, count: 1 })
+				}
+			})
+
+			commonFriends.value = Array.from(friendCounts.values()).filter(
+				(friend) => friend.count > 1
+			)
+		}
+	}
 
 	const updateFriendsList = () => {
 		if (friendsQuery.data.value) {
@@ -79,6 +118,8 @@ export const useSourceStore = defineStore('sourceStore', () => {
 			})
 
 			friendsList.value = uniqueFriends
+
+			findCommonFriends()
 			sortFriendsList()
 		}
 	}
@@ -97,10 +138,12 @@ export const useSourceStore = defineStore('sourceStore', () => {
 	return {
 		sourceList,
 		friendsList,
+		friendsByUserId,
 		addUser,
 		removeUser,
 		setFriendsList,
 		clearLists,
 		buildFriendsList,
+		findUsersWithFriend,
 	}
 })
